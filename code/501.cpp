@@ -11,40 +11,41 @@
  */
 class Solution {
 public:
-    vector<int> findMode(TreeNode* root) {
-        stack<TreeNode*> st;
-        TreeNode* cur = root;
-        TreeNode* pre = NULL;
-        int maxCount = 0;
-        int count = 0;
-        vector<int> result;
-        while (cur != NULL || !st.empty()) {
-            if (cur != NULL) {
-                st.push(cur);
-                cur = cur->left;
-            } else {
-                cur = st.top();
-                st.pop();
-                if (pre == NULL) {
-                    count = 1;
-                } else if (pre->val == cur->val) {
-                    count++;
-                } else {
-                    count = 1;
-                }
-                if (count == maxCount) {
-                    result.push_back(cur->val);
-                }
+    int count;
+    int maxcount;
+    TreeNode* pre = NULL;
+    vector<int> result;
 
-                if (count > maxCount) {
-                    maxCount = count;
-                    result.clear();
-                    result.push_back(cur->val);
-                }
-                pre = cur;
-                cur = cur->right;
-            }
+    void searchBSTtree(TreeNode* cur)
+    {
+        if(cur==NULL) return;
+
+        searchBSTtree(cur->left);
+
+        if(pre == NULL) count = 1;
+        else if(pre->val == cur->val) count++;
+        else count = 1;
+
+        pre = cur;
+
+        if(count == maxcount) result.push_back(cur->val);
+        
+        if(count > maxcount)
+        {
+            maxcount = count;
+            result.clear();
+            result.push_back(cur->val);
         }
+
+        searchBSTtree(cur->right);
+        return;
+    }
+    
+    vector<int> findMode(TreeNode* root) {
+        count = 0;
+        maxcount = 0;
+        result.clear(); 
+        searchBSTtree(root);
         return result;
     }
 };
